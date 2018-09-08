@@ -1,4 +1,3 @@
-// import workbox from 'workbox-sw'
 import gameEngine from './controller/offline'
 
 workbox.core.setCacheNameDetails({prefix: 'pwa-game'})
@@ -11,16 +10,16 @@ workbox.precaching.precacheAndRoute(self.__precacheManifest, {
 workbox.routing.registerRoute(
   /\/api/,
   ({url, event}) => {
-    const funcName = url.pathname.split('/').pop()
-    if (gameEngine[funcName]) {
-      event.respondWith(
-        (async function() {
-          const body = await event.request.json()
-          const res = gameEngine[funcName](body)
-          return new Response(JSON.stringify(res))
-        })()
-      )
+    const path = url.pathname.split('/')
+    const funcName = path.pop()
+    const className = path.pop()
+    if (gameEngine[className] && gameEngine[className][funcName]) {
+      return event.request.json().then(body => {
+        const res = gameEngine[className][funcName](body) // res should be json
+        return new Response(JSON.stringify(res))
+      })
     }
+    return fetch(event.request)
   },
   'POST'
 )

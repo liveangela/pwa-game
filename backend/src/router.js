@@ -11,10 +11,11 @@ router.get('/index.html', (ctx, next) => {
 })
 
 router.get('/', ctx => {
+  ctx.type = 'html'
   ctx.body = fs.createReadStream('./static/index.html')
 })
 
-router.get('/api/:ctrlName/:method', ctx => {
+router.post('/api/:ctrlName/:method', ctx => {
   const {ctrlName, method} = ctx.params
   if (
     ctrlName &&
@@ -22,6 +23,7 @@ router.get('/api/:ctrlName/:method', ctx => {
     Controller[ctrlName] &&
     Controller[ctrlName][method]
   ) {
+    ctx.type = 'json'
     ctx.body = Controller[ctrlName][method]()
   }
 })

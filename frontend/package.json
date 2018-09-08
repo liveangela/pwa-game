@@ -23,6 +23,9 @@
     "stylus-loader": "^3.0.2",
     "vue-template-compiler": "^2.5.17"
   },
+  "babel": {
+    "presets": ["@vue/app"]
+  },
   "eslintConfig": {
     "root": true,
     "env": {
@@ -32,7 +35,14 @@
       "plugin:vue/essential",
       "@vue/prettier"
     ],
-    "rules": {},
+    "rules": {
+      "no-console": 1,
+      "prettier/prettier": ["error", {
+        "singleQuote": true,
+        "semi": false,
+        "bracketSpacing": false
+      }]
+    },
     "parserOptions": {
       "parser": "babel-eslint"
     }

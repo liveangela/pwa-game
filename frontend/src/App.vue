@@ -1,92 +1,52 @@
-<template>
-  <v-app>
-    <v-navigation-drawer
-      persistent
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      v-model="drawer"
-      enable-resize-watcher
-      fixed
+<template lang="pug">
+  v-app.wrapper
+    v-content
+      router-view
+    v-bottom-nav(
+      :active.sync="bottomNav"
+      :color="color"
+      :value="isBottomNavShown"
       app
-    >
-      <v-list>
-        <v-list-tile
-          value="true"
-          v-for="(item, i) in items"
-          :key="i"
-        >
-          <v-list-tile-action>
-            <v-icon v-html="item.icon"></v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title v-text="item.title"></v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer>
-    <v-toolbar
-      app
-      :clipped-left="clipped"
-    >
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
-        <v-icon v-html="miniVariant ? 'chevron_right' : 'chevron_left'"></v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="clipped = !clipped">
-        <v-icon>web</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="fixed = !fixed">
-        <v-icon>remove</v-icon>
-      </v-btn>
-      <v-toolbar-title v-text="title"></v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn icon @click.stop="rightDrawer = !rightDrawer">
-        <v-icon>menu</v-icon>
-      </v-btn>
-    </v-toolbar>
-    <v-content>
-      <router-view/>
-    </v-content>
-    <v-navigation-drawer
-      temporary
-      :right="right"
-      v-model="rightDrawer"
-      fixed
-      app
-    >
-      <v-list>
-        <v-list-tile @click="right = !right">
-          <v-list-tile-action>
-            <v-icon>compare_arrows</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-title>Switch drawer (click me)</v-list-tile-title>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer>
-    <v-footer :fixed="fixed" app>
-      <span>&copy; 2017</span>
-    </v-footer>
-  </v-app>
+    )
+      v-btn(
+        v-for="(list, i) in bottomList"
+        :key="i"
+        :to="list.path"
+        dark
+      )
+        span {{list.text}}
+        v-icon {{list.icon}}
 </template>
 
 <script>
+import {mapState} from 'vuex'
 
 export default {
   name: 'App',
-  data () {
+  computed: {
+    ...mapState(['isBottomNavShown']),
+    color() {
+      const {bottomNav, bottomList} = this
+      return bottomList[bottomNav].color
+    }
+  },
+  data() {
     return {
-      clipped: false,
-      drawer: true,
-      fixed: false,
-      items: [{
-        icon: 'bubble_chart',
-        title: 'Inspire'
-      }],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Vuetify.js'
+      bottomNav: 0,
+      bottomList: [
+        {text: 'Video', icon: 'ondemand_video', color: 'blue-grey', path: '/'},
+        {text: 'Music', icon: 'music_note', color: 'teal', path: '/about'},
+        {text: 'Book', icon: 'book', color: 'brown', path: '/book'},
+        {text: 'Image', icon: 'image', color: 'indigo', path: '/image'},
+        {text: 'Web', icon: 'web', color: 'deep-purple', path: '/web'}
+      ]
     }
   }
 }
 </script>
+
+<style lang="stylus" scoped>
+.wrapper
+  max-width 1024px
+  margin 0 auto
+</style>
